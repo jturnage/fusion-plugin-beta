@@ -24,14 +24,12 @@
 
     <resource-file src="src/ios/ControllerCaptureOverlay.xib" />
     <resource-file src="src/ios/ControllerCaptureReview.xib" />
-    <resource-file src="src/ios/ControllerImagePreview.xib" />
     <resource-file src="src/ios/FusionPlugin.bundle" />
 
     <header-file src="src/ios/CaptureFocus.h" />
     <header-file src="src/ios/CaptureManager.h" />
     <header-file src="src/ios/ControllerCaptureOverlay.h" />
     <header-file src="src/ios/ControllerCaptureReview.h" />
-    <header-file src="src/ios/ControllerImagePreview.h" />
     <header-file src="src/ios/FusionExercise.h" />
     <header-file src="src/ios/FusionPlugin.h" />
     <header-file src="src/ios/FusionResult.h" />
@@ -40,7 +38,6 @@
     <source-file src="src/ios/CaptureManager.m" />
     <source-file src="src/ios/ControllerCaptureOverlay.m" />
     <source-file src="src/ios/ControllerCaptureReview.m" />
-    <source-file src="src/ios/ControllerImagePreview.m" />
     <source-file src="src/ios/FusionExercise.m" />
     <source-file src="src/ios/FusionPlugin.m" />
     <source-file src="src/ios/FusionResult.m" />
