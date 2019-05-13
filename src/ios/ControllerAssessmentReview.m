@@ -12,7 +12,6 @@
   UIView* waitDescription;
   UIView* decisionModal;
   NSTimer* loadingTimer;
-  NSTimer* fakeUploadTimer;
   BOOL initializedSeekbar;
   BOOL hasExercisesRemaining;
 }
@@ -35,14 +34,13 @@
     initializedSeekbar = YES;
     __weak id weakSelf = self;
 
-    id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-    [self.slider setHidden:(exerciseVideoUrl == nil)];
-    [self.playbackButton setSelected:(exerciseVideoUrl != nil)];
+    [self.slider setHidden:YES];
+    [self.playbackButton setSelected:NO];
     [self.playbackButton setHidden:NO];
     
     CGFloat seekbarWidth = CGRectGetWidth([self.slider bounds]);
     double interval = (0.5 * (seconds / seekbarWidth));
-    
+
     CMTime seekbarSeconds = CMTimeMakeWithSeconds(interval, NSEC_PER_SEC);
     seekbarObserver = [player addPeriodicTimeObserverForInterval:seekbarSeconds queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
       [weakSelf seekbarSync];
@@ -76,21 +74,13 @@
 }
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
-  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  [self.captureInfoView setHidden:YES];
   [self.saveInfoView setHidden:YES];
   [self.saveButton setHidden:YES];
   [self.takeButton setHidden:YES];
   
   if ([self.playbackButton isSelected]) {
-    if (exerciseVideoUrl != nil) {
-      [self.captureInfoView setHidden:NO];
-      [self.takeButton setHidden:NO];
-    } else {
-      [self.saveInfoView setHidden:NO];
-      [self.saveButton setHidden:NO];
-    }
-
+    [self.saveInfoView setHidden:NO];
+    [self.saveButton setHidden:NO];
     [self.moviePlayer.player pause];
   } else
     [self.moviePlayer.player play];
@@ -99,7 +89,6 @@
 }
 
 -(IBAction) seekbarAction:(UISlider *)sender forEvent:(UIEvent *)event {
-  [[self.captureInfoView layer] setHidden:YES];
   [[self.saveInfoView layer] setHidden:YES];
 
   AVPlayer* player = self.moviePlayer.player;
@@ -120,12 +109,7 @@
   AVPlayer* player = self.moviePlayer.player;
   [player setRate:0.f];
 
-  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl != nil)
-    [self.takeButton setHidden:NO];
-  else
-    [self.saveButton setHidden:NO];
-  
+  [self.saveButton setHidden:NO];
   [self.playbackButton setSelected:NO];
 }
 
@@ -219,19 +203,11 @@
   AVPlayerItem* item = [notification object];
   [item seekToTime:kCMTimeZero];
 
-  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl == nil)
-    [self.saveButton setHidden:NO];
-  else {
-    [self.takeButton setHidden:NO];
-    [self.captureInfoView setHidden:NO];
-  }
-
+  [self.saveButton setHidden:NO];
   [self.playbackButton setSelected:NO];
 }
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
   AVPlayer* player = [self.moviePlayer player];
   AVPlayerItem* playerItem = [player currentItem];
 
@@ -245,9 +221,6 @@
       [self presentViewController:alertController animated:YES completion:nil];
       return;
     }
-
-    if (exerciseVideoUrl != nil)
-      [self ensureWaitCover];
   }
 
   if (object == playerItem && [keyPath isEqualToString:@"status"]) {
@@ -606,12 +579,13 @@
 
 -(void) uploadingFailedFired:(NSTimer *)timer {
   dispatch_async(dispatch_get_main_queue(), ^(void) {
-    if ([loadingTimer isValid])
-      [loadingTimer invalidate];
-    loadingTimer = nil;
+    if (loadingTimer) {
+      if ([loadingTimer isValid])
+        [loadingTimer invalidate];
+      loadingTimer = nil;
+    }
     
     [[self.plugin exercise] setVideoUrl:NULL];
-    [self.captureInfoView setHidden:YES];
     [self.saveInfoView setHidden:YES];
     [self.saveButton setHidden:YES];
     [self.takeButton setHidden:YES];
@@ -625,12 +599,13 @@
 
 -(void) uploadingFinishFired:(NSTimer *)timer {
   dispatch_async(dispatch_get_main_queue(), ^(void) {
-    if ([loadingTimer isValid])
-      [loadingTimer invalidate];
-    loadingTimer = nil;
+    if (loadingTimer) {
+      if ([loadingTimer isValid])
+        [loadingTimer invalidate];
+      loadingTimer = nil;
+    }
     
     [[self.plugin exercise] setVideoUrl:[self.plugin currentVideoUrl]];
-    [self.captureInfoView setHidden:YES];
     [self.saveInfoView setHidden:YES];
     [self.saveButton setHidden:YES];
     [self.takeButton setHidden:YES];
@@ -644,7 +619,6 @@
 
 -(void) viewDidLoad {
   [super viewDidLoad];
-  [[self.captureInfoView layer] setCornerRadius:8];
   [[self.saveInfoView layer] setCornerRadius:8];
 
   AVPlayer* player = [AVPlayer playerWithURL:[self.plugin currentVideoUrl]];
@@ -674,14 +648,13 @@
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.playerView setBackgroundColor:UIColor.blackColor];
     [self.playerView addSubview:self.moviePlayer.view];
-    
     [self.slider setHidden:YES];
-    [self.saveInfoView setHidden:YES];
-    [self.captureInfoView setHidden:YES];
-    [self.saveButton setHidden:YES];
-    [self.takeButton setHidden:YES];
-    [self.retakeButton setHidden:YES];
     [self.playbackButton setSelected:YES];
+
+    [self initSeekbar];
+    [self.saveInfoView setHidden:NO];
+    [self.saveButton setHidden:NO];
+    [self.retakeButton setHidden:NO];
   });
 }
 
