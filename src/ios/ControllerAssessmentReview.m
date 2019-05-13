@@ -76,7 +76,6 @@
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
   [self.saveInfoView setHidden:YES];
   [self.saveButton setHidden:YES];
-  [self.takeButton setHidden:YES];
   
   if ([self.playbackButton isSelected]) {
     [self.saveInfoView setHidden:NO];
@@ -588,7 +587,6 @@
     [[self.plugin exercise] setVideoUrl:NULL];
     [self.saveInfoView setHidden:YES];
     [self.saveButton setHidden:YES];
-    [self.takeButton setHidden:YES];
     [self.retakeButton setHidden:YES];
     
     [self unloadWaitDescription];
@@ -608,7 +606,6 @@
     [[self.plugin exercise] setVideoUrl:[self.plugin currentVideoUrl]];
     [self.saveInfoView setHidden:YES];
     [self.saveButton setHidden:YES];
-    [self.takeButton setHidden:YES];
     [self.retakeButton setHidden:YES];
     
     [self unloadWaitDescription];
