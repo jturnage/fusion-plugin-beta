@@ -24,7 +24,6 @@
 @property BOOL markersEnabled;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
--(IBAction) takePicture:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) saveVideo:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent*)event;

@@ -11,7 +11,7 @@
   [self identifyExercise:[command.arguments objectAtIndex:0]];
   [self identifySettings:[command.arguments objectAtIndex:1]];
 
-  ControllerCaptureOverlay* controller = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerCaptureOverlay" bundle:nil];
+  ControllerCaptureOverlay* controller = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerAssessmentOverlay" bundle:nil];
   [controller setPlugin:self];
   [controller setMarkersEnabled:self.markersEnabled];
 

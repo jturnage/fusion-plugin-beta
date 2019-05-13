@@ -233,7 +233,7 @@
 -(void) viewPlayer:(NSURL *)outputFileUrl {
   [self.plugin setCurrentVideoUrl:outputFileUrl];
 
-  ControllerCaptureReview* player = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
+  ControllerCaptureReview* player = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerAssessmentReview" bundle:nil];
   [player setPlugin:self.plugin];
   [player setMarkersEnabled:self.markersEnabled];
   

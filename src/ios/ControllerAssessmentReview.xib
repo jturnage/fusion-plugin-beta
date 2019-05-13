@@ -19,7 +19,6 @@
                 <outlet property="saveButton" destination="Jvh-Qr-cHb" id="TDp-8e-Q95"/>
                 <outlet property="saveInfoView" destination="NOI-rQ-ivB" id="vQF-GY-syy"/>
                 <outlet property="slider" destination="Trq-3S-GzW" id="eZQ-2q-dR3"/>
-                <outlet property="takeButton" destination="knZ-7c-XGu" id="oKd-UG-7uK"/>
                 <outlet property="timerLabel" destination="WOo-kR-AqP" id="UjN-oL-Rl4"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -50,16 +49,6 @@
                             <state key="highlighted" image="AssessmentPlugin.bundle/btn-retake-touch.png"/>
                             <connections>
                                 <action selector="retakeVideo:forEvent:" destination="-1" eventType="touchUpInside" id="bTX-vO-Qh3"/>
-                            </connections>
-                        </button>
-                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="knZ-7c-XGu">
-                            <rect key="frame" x="315" y="25" width="71" height="77"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="AssessmentPlugin.bundle/btn-save.png"/>
-                            <state key="highlighted" image="AssessmentPlugin.bundle/btn-save-touch.png"/>
-                            <connections>
-                                <action selector="takePicture:forEvent:" destination="-1" eventType="touchUpInside" id="OHK-nA-NYE"/>
                             </connections>
                         </button>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jvh-Qr-cHb">

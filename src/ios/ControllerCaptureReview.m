@@ -697,7 +697,7 @@
   AVPlayerItem* playerItem = [player currentItem];
   [player removeTimeObserver:seekbarObserver];
   [player removeObserver:self forKeyPath:@"status"];
-  [playerItem removeObserver:self forKeyPath:@"status"]
+  [playerItem removeObserver:self forKeyPath:@"status"];
   alertController = nil;
   
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
