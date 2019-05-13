@@ -1,6 +1,6 @@
 
 #import <UIKit/UIKit.h>
-#import "CaptureManager.h"
+#import "AssessmentManager.h"
 
 @class AssessmentPlugin;
 @interface ControllerAssessmentOverlay : UIViewController <UINavigationControllerDelegate, CaptureOutputDelegate> {}
