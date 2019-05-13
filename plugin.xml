@@ -18,7 +18,7 @@
   <platform name="ios">
     <config-file target="config.xml" parent="/*">
       <feature name="FusionAssessment">
-        <param name="ios-package" value="FusionPlugin" />
+        <param name="ios-package" value="AssessmentPlugin" />
       </feature>
     </config-file>
 
@@ -26,21 +26,21 @@
     <resource-file src="src/ios/ControllerAssessmentReview.xib" />
     <resource-file src="src/ios/AssessmentPlugin.bundle" />
 
-    <header-file src="src/ios/CaptureFocus.h" />
-    <header-file src="src/ios/CaptureManager.h" />
-    <header-file src="src/ios/ControllerCaptureOverlay.h" />
-    <header-file src="src/ios/ControllerCaptureReview.h" />
-    <header-file src="src/ios/FusionExercise.h" />
-    <header-file src="src/ios/FusionPlugin.h" />
-    <header-file src="src/ios/FusionResult.h" />
+    <header-file src="src/ios/AssessmentFocus.h" />
+    <header-file src="src/ios/AssessmentManager.h" />
+    <header-file src="src/ios/ControllerAssessmentOverlay.h" />
+    <header-file src="src/ios/ControllerAssessmentReview.h" />
+    <header-file src="src/ios/AssessmentExercise.h" />
+    <header-file src="src/ios/AssessmentPlugin.h" />
+    <header-file src="src/ios/AssessmentResult.h" />
 
-    <source-file src="src/ios/CaptureFocus.m" />
-    <source-file src="src/ios/CaptureManager.m" />
-    <source-file src="src/ios/ControllerCaptureOverlay.m" />
-    <source-file src="src/ios/ControllerCaptureReview.m" />
-    <source-file src="src/ios/FusionExercise.m" />
-    <source-file src="src/ios/FusionPlugin.m" />
-    <source-file src="src/ios/FusionResult.m" />
+    <source-file src="src/ios/AssessmentFocus.m" />
+    <source-file src="src/ios/AssessmentManager.m" />
+    <source-file src="src/ios/ControllerAssessmentOverlay.m" />
+    <source-file src="src/ios/ControllerAssessmentReview.m" />
+    <source-file src="src/ios/AssessmentExercise.m" />
+    <source-file src="src/ios/AssessmentPlugin.m" />
+    <source-file src="src/ios/AssessmentResult.m" />
 
     <framework src="AVFoundation.framework" />
     <framework src="AVKit.framework" />

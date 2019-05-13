@@ -1,8 +1,8 @@
 
 #import <QuartzCore/QuartzCore.h>
-#import "CaptureFocus.h"
+#import "AssessmentFocus.h"
 
-@implementation CaptureFocus {
+@implementation AssessmentFocus {
   CGPoint focusPoint;
   CABasicAnimation* blinkAnimation;
 }

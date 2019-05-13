@@ -1,9 +1,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
-#import "FusionResult.h"
+#import "AssessmentResult.h"
 
-@implementation FusionResult
+@implementation AssessmentResult
 @synthesize videoUrl;
 @synthesize videoImage;
 @synthesize videoTimestamp;

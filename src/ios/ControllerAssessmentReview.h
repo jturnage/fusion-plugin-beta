@@ -4,8 +4,8 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-@class FusionPlugin;
-@interface ControllerCaptureReview : UIViewController <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate> {
+@class AssessmentPlugin;
+@interface ControllerAssessmentReview : UIViewController <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate> {
   id seekbarObserver;
 }
 
@@ -20,7 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* playbackButton;
 @property (weak, nonatomic) IBOutlet UILabel* timerLabel;
 @property AVPlayerViewController* moviePlayer;
-@property FusionPlugin* plugin;
+@property AssessmentPlugin* plugin;
 @property BOOL markersEnabled;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;

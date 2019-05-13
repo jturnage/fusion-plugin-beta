@@ -1,8 +1,8 @@
 
-#import "CaptureFocus.h"
-#import "CaptureManager.h"
+#import "AssessmentFocus.h"
+#import "AssessmentManager.h"
 
-@implementation CaptureManager {
+@implementation AssessmentManager {
   BOOL isActivelyRecording;
 }
 

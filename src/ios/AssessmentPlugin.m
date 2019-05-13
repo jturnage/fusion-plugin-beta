@@ -1,9 +1,9 @@
 
-#import "FusionExercise.h"
-#import "FusionResult.h"
-#import "FusionPlugin.h"
+#import "AssessmentExercise.h"
+#import "AssessmentResult.h"
+#import "AssessmentPlugin.h"
 
-@implementation FusionPlugin
+@implementation AssessmentPlugin
 @synthesize hasPendingOperation;
 
 -(void) takeVideo:(CDVInvokedUrlCommand *)command {
@@ -11,7 +11,7 @@
   [self identifyExercise:[command.arguments objectAtIndex:0]];
   [self identifySettings:[command.arguments objectAtIndex:1]];
 
-  ControllerCaptureOverlay* controller = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerAssessmentOverlay" bundle:nil];
+  ControllerAssessmentOverlay* controller = [[ControllerAssessmentOverlay alloc] initWithNibName:@"ControllerAssessmentOverlay" bundle:nil];
   [controller setPlugin:self];
   [controller setMarkersEnabled:self.markersEnabled];
 
@@ -20,7 +20,7 @@
 }
 
 -(void) cancelled {
-  FusionResult* result = [[FusionResult alloc] init];
+  AssessmentResult* result = [[AssessmentResult alloc] init];
   [result setCancelled:YES];
 
   [self captured:result];
@@ -39,7 +39,7 @@
   [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void) captured:(FusionResult *)result {
+-(void) captured:(AssessmentResult *)result {
   NSError* error;
   NSString* message = [result toJSON:&error];
 
@@ -69,7 +69,7 @@
 
   id videoUrl = jsonData[@"videoUrl"];
   [self setCurrentVideoUrl:(videoUrl != nil) ? [[NSURL alloc] initWithString:videoUrl] : nil];
-  [self setExercise:[[FusionExercise alloc] initWithData:jsonData]];
+  [self setExercise:[[AssessmentExercise alloc] initWithData:jsonData]];
 }
 
 -(void) identifySettings:(NSString *)json {

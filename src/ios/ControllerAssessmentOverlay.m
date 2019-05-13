@@ -2,13 +2,13 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "FusionPlugin.h"
-#import "CaptureFocus.h"
-#import "CaptureManager.h"
-#import "ControllerCaptureOverlay.h"
+#import "AssessmentPlugin.h"
+#import "AssessmentFocus.h"
+#import "AssessmentManager.h"
+#import "ControllerAssessmentOverlay.h"
 
-@implementation ControllerCaptureOverlay {
-    CaptureFocus* focusSquare;
+@implementation ControllerAssessmentOverlay {
+    AssessmentFocus* focusSquare;
     NSDate* recordingDate;
     NSTimer* recordingTimer;
     UIAlertController* alertController;
@@ -21,7 +21,7 @@
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    self.manager = [[CaptureManager alloc] initWithDelegate:self];
+    self.manager = [[AssessmentManager alloc] initWithDelegate:self];
   }
   return self;
 }
@@ -213,7 +213,7 @@
 
 -(void) captureFocus:(CGPoint)point {
   if (!focusSquare) {
-    focusSquare = [[CaptureFocus alloc] initWithTouchPoint:point];
+    focusSquare = [[AssessmentFocus alloc] initWithTouchPoint:point];
     [self.view addSubview:focusSquare];
     [focusSquare setNeedsDisplay];
     [focusSquare animate];
@@ -233,7 +233,7 @@
 -(void) viewPlayer:(NSURL *)outputFileUrl {
   [self.plugin setCurrentVideoUrl:outputFileUrl];
 
-  ControllerCaptureReview* player = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerAssessmentReview" bundle:nil];
+  ControllerAssessmentReview* player = [[ControllerAssessmentReview alloc] initWithNibName:@"ControllerAssessmentReview" bundle:nil];
   [player setPlugin:self.plugin];
   [player setMarkersEnabled:self.markersEnabled];
   

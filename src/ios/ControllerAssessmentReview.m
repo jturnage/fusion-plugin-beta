@@ -1,10 +1,10 @@
 
-#import "FusionResult.h"
-#import "FusionPlugin.h"
-#import "ControllerCaptureReview.h"
+#import "AssessmentResult.h"
+#import "AssessmentPlugin.h"
+#import "ControllerAssessmentReview.h"
 #import "MaterialActivityIndicator.h"
 
-@implementation ControllerCaptureReview {
+@implementation ControllerAssessmentReview {
   UIAlertController* alertController;
   MDCActivityIndicator* waitIndicator;
   UILabel* waitLabel;
@@ -61,7 +61,7 @@
 }
 
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent *)event {
-  ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
+  ControllerAssessmentOverlay* parent = (ControllerAssessmentOverlay*)self.parentViewController;
   [[parent overlayImage] setHidden:NO];
   [[parent timerLabel] setText:@"00.000"];
   [parent retakeVideo:self forMovie:[self.plugin currentVideoUrl]];
@@ -131,7 +131,7 @@
 
 -(void) uploadVideo {
   NSString* boundary = @"FfD04x";
-  FusionExercise* exercise = [self.plugin exercise];
+  AssessmentExercise* exercise = [self.plugin exercise];
 
   if (![self.plugin uploadEndpointUrl]) {
     return;
@@ -403,7 +403,7 @@
     UIViewAutoresizingFlexibleBottomMargin)];
   [[decisionModal layer] setCornerRadius:12];
 
-  UIImage* image = [UIImage imageNamed:@"FusionPlugin.bundle/check-mark.png"];
+  UIImage* image = [UIImage imageNamed:@"AssessmentPlugin.bundle/check-mark.png"];
   UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
   imageView.frame = CGRectMake(0, 25, 40, 40);
 
@@ -454,7 +454,7 @@
     UIViewAutoresizingFlexibleBottomMargin)];
   [[decisionModal layer] setCornerRadius:12];
 
-  UIImage* image = [UIImage imageNamed:@"FusionPlugin.bundle/cross-mark.png"];
+  UIImage* image = [UIImage imageNamed:@"AssessmentPlugin.bundle/cross-mark.png"];
   UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
   imageView.frame = CGRectMake(0, 25, 40, 40);
 
@@ -587,7 +587,7 @@
   [self unloadModal];
   [self unloadWaitCover];
   
-  ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
+  ControllerAssessmentOverlay* parent = (ControllerAssessmentOverlay*)self.parentViewController;
   [[parent overlayImage] setHidden:NO];
   [[parent timerLabel] setText:@"00.000"];
   [parent retakeVideo:self forMovie:[self.plugin currentVideoUrl]];
@@ -597,7 +597,7 @@
   [self unloadModal];
   [self unloadWaitCover];
   
-  FusionResult* result = [[FusionResult alloc] init];
+  AssessmentResult* result = [[AssessmentResult alloc] init];
   [result setCapturedImage:NO];
   [result setCapturedVideo:YES];
   [result setVideoUrl:[self.plugin currentVideoUrl]];

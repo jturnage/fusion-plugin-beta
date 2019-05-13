@@ -1,16 +1,16 @@
 
 #import <Cordova/CDV.h>
-#import "FusionExercise.h"
-#import "FusionResult.h"
-#import "ControllerCaptureOverlay.h"
-#import "ControllerCaptureReview.h"
+#import "AssessmentExercise.h"
+#import "AssessmentResult.h"
+#import "ControllerAssessmentOverlay.h"
+#import "ControllerAssessmentReview.h"
 
-@interface FusionPlugin : CDVPlugin {
+@interface AssessmentPlugin : CDVPlugin {
   BOOL hasPendingOperation;
 }
 
 @property (nonatomic) CDVInvokedUrlCommand* command;
-@property FusionExercise* exercise;
+@property AssessmentExercise* exercise;
 @property NSURL* currentVideoUrl;
 @property NSURL* uploadEndpointUrl;
 @property NSString* apiAuthorize;
@@ -20,6 +20,6 @@
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) cancelled;
 -(void) failed:(NSString*)message;
--(void) captured:(FusionResult*)result;
+-(void) captured:(AssessmentResult*)result;
 
 @end

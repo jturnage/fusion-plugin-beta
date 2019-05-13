@@ -1,7 +1,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-@interface FusionResult : NSObject {}
+@interface AssessmentResult : NSObject {}
 
 @property (assign) BOOL cancelled;
 @property (assign) BOOL capturedImage;

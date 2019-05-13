@@ -8,7 +8,7 @@
 
 @end
 
-@interface CaptureManager : NSObject {
+@interface AssessmentManager : NSObject {
   dispatch_queue_t queue;
 
   NSURL* outputUrl;

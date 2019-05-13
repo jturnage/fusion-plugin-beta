@@ -2,8 +2,8 @@
 #import <UIKit/UIKit.h>
 #import "CaptureManager.h"
 
-@class FusionPlugin;
-@interface ControllerCaptureOverlay : UIViewController <UINavigationControllerDelegate, CaptureOutputDelegate> {}
+@class AssessmentPlugin;
+@interface ControllerAssessmentOverlay : UIViewController <UINavigationControllerDelegate, CaptureOutputDelegate> {}
 
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton* captureButton;
@@ -11,8 +11,8 @@
 @property (weak, nonatomic) IBOutlet UIView* controlsViewBottom;
 @property (weak, nonatomic) IBOutlet UIView* controlsViewTop;
 @property (weak, nonatomic) IBOutlet UILabel* timerLabel;
-@property CaptureManager* manager;
-@property FusionPlugin* plugin;
+@property AssessmentManager* manager;
+@property AssessmentPlugin* plugin;
 @property BOOL markersEnabled;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;

@@ -1,7 +1,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-@interface FusionExercise : NSObject {}
+@interface AssessmentExercise : NSObject {}
 
 @property (nullable) NSNumber* testId;
 @property (nullable) NSNumber* testTypeId;

@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface CaptureFocus : UIView <CAAnimationDelegate> {}
+@interface AssessmentFocus : UIView <CAAnimationDelegate> {}
 
 -(id) initWithTouchPoint:(CGPoint)point;
 -(BOOL) updateTouchPoint:(CGPoint)point;

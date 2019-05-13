@@ -1,9 +1,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
-#import "FusionExercise.h"
+#import "AssessmentExercise.h"
 
-@implementation FusionExercise
+@implementation AssessmentExercise
 
 -(id)initWithData:(NSDictionary *)data {
   self = [super init];
