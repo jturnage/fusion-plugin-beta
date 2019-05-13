@@ -22,9 +22,9 @@
       </feature>
     </config-file>
 
-    <resource-file src="src/ios/ControllerCaptureOverlay.xib" />
-    <resource-file src="src/ios/ControllerCaptureReview.xib" />
-    <resource-file src="src/ios/FusionPlugin.bundle" />
+    <resource-file src="src/ios/ControllerAssessmentOverlay.xib" />
+    <resource-file src="src/ios/ControllerAssessmentReview.xib" />
+    <resource-file src="src/ios/AssessmentPlugin.bundle" />
 
     <header-file src="src/ios/CaptureFocus.h" />
     <header-file src="src/ios/CaptureManager.h" />

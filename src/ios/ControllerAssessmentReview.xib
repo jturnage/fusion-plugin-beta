@@ -36,8 +36,8 @@
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dts-ye-hy3">
                             <rect key="frame" x="161" y="17" width="92" height="92"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <state key="normal" backgroundImage="FusionPlugin.bundle/btn-play.png"/>
-                            <state key="selected" backgroundImage="FusionPlugin.bundle/btn-pause.png"/>
+                            <state key="normal" backgroundImage="AssessmentPlugin.bundle/btn-play.png"/>
+                            <state key="selected" backgroundImage="AssessmentPlugin.bundle/btn-pause.png"/>
                             <connections>
                                 <action selector="togglePlayback:forEvent:" destination="-1" eventType="touchUpInside" id="jCT-u9-4Jx"/>
                             </connections>
@@ -46,8 +46,8 @@
                             <rect key="frame" x="38" y="25" width="61" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-retake.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-retake-touch.png"/>
+                            <state key="normal" image="AssessmentPlugin.bundle/btn-retake.png"/>
+                            <state key="highlighted" image="AssessmentPlugin.bundle/btn-retake-touch.png"/>
                             <connections>
                                 <action selector="retakeVideo:forEvent:" destination="-1" eventType="touchUpInside" id="bTX-vO-Qh3"/>
                             </connections>
@@ -56,8 +56,8 @@
                             <rect key="frame" x="315" y="25" width="71" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-save.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-save-touch.png"/>
+                            <state key="normal" image="AssessmentPlugin.bundle/btn-save.png"/>
+                            <state key="highlighted" image="AssessmentPlugin.bundle/btn-save-touch.png"/>
                             <connections>
                                 <action selector="takePicture:forEvent:" destination="-1" eventType="touchUpInside" id="OHK-nA-NYE"/>
                             </connections>
@@ -66,8 +66,8 @@
                             <rect key="frame" x="315" y="25" width="71" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-capture.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-capture-touch.png"/>
+                            <state key="normal" image="AssessmentPlugin.bundle/btn-capture.png"/>
+                            <state key="highlighted" image="AssessmentPlugin.bundle/btn-capture-touch.png"/>
                             <connections>
                                 <action selector="saveVideo:forEvent:" destination="-1" eventType="touchUpInside" id="ATi-Nu-gPw"/>
                             </connections>
@@ -103,8 +103,8 @@
                             <rect key="frame" x="8" y="5" width="35" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <size key="titleShadowOffset" width="10" height="10"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-back.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-back-touch.png"/>
+                            <state key="normal" image="AssessmentPlugin.bundle/btn-back.png"/>
+                            <state key="highlighted" image="AssessmentPlugin.bundle/btn-back-touch.png"/>
                             <connections>
                                 <action selector="cancel:forEvent:" destination="-1" eventType="touchUpInside" id="gX3-MS-aN8"/>
                             </connections>
