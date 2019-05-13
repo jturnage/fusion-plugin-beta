@@ -255,7 +255,6 @@
   player.view.frame = frame;
   [UIView animateWithDuration:0.25f animations:^{
     player.view.frame = self.view.bounds;
-    [player.takeButton setHidden:YES];
     [player.saveButton setHidden:NO];
     [player.retakeButton setHidden:NO];
   }];
