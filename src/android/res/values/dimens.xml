@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="media_buttons_lr_margin">20dp</dimen>
+    <dimen name="media_buttons_bottom_margin">8dp</dimen>
+
+    <dimen name="cancel_button_left_margin">15dp</dimen>
+    <dimen name="cancel_button_top_margin">15dp</dimen>
+
+    <dimen name="progress_bar_height">40dp</dimen>
+    <dimen name="progress_bar_text_font_size">20dp</dimen> <!-- dp instead of sp here since the progress bar height is fixed and will look weird if the text is bigger than it -->
+</resources>
