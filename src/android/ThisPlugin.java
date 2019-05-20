@@ -13,5 +13,7 @@ public class ThisPlugin {
 
     public static ApiSettings settings = null;
     public static FusioneticsExercise exercise = null;
+
+    public static Boolean seenMediaInstructions = false;
     
 }

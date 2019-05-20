@@ -24,6 +24,20 @@
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/back" />
 
+    <TextView
+        android:id="@+id/instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cancel"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp"
+        android:textSize="22sp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/media_buttons_bg_translucency"/>
+
     <FrameLayout
         android:id="@+id/reviewButtons"
         android:layout_width="match_parent"
@@ -32,9 +46,9 @@
         android:paddingLeft="@dimen/media_buttons_lr_margin"
         android:paddingRight="@dimen/media_buttons_lr_margin"
         android:paddingBottom="@dimen/media_buttons_bottom_margin"
-        android:background="@android:color/transparent"
+        android:background="@color/media_buttons_bg_translucency"
         android:orientation="horizontal">
-
+<!-- android:background="@android:color/transparent" -->
         <ImageButton
             android:id="@+id/retake"
             android:layout_width="wrap_content"

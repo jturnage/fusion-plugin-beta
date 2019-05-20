@@ -9,8 +9,12 @@ import com.fusionetics.plugins.bodymap.ApiSettings;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -27,11 +31,16 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
+
 // import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -306,7 +315,32 @@ public class CameraFragment extends Fragment
         }
         else if(id == cancelButtonId) {
             Log.d(ThisPlugin.TAG, "Cancel button clicked");
-            eventHandler.CancelRequested();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+            builder.setTitle("Warning");
+            builder.setMessage("You are about to leave this section of the test and will lose any data")
+                .setCancelable(false)
+                .setPositiveButton("OK", new OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        eventHandler.CancelRequested();
+                    }
+                })
+                .setNegativeButton("Cancel",new OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+
+            // create alert dialog
+            AlertDialog alertDialog = builder.create();
+            Window window = alertDialog.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+
+            wlp.gravity = Gravity.CENTER;
+//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(wlp);
+
+            alertDialog.show();
         }
         else {
             Log.d(ThisPlugin.TAG, "Something clicked - ignoring");

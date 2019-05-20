@@ -7,10 +7,14 @@ import com.fusionetics.plugins.bodymap.Objects.Video;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 // import android.content.Context;
 // import android.content.pm.PackageManager;
 // import android.content.res.Configuration;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 // import android.graphics.Matrix;
 // import android.graphics.RectF;
 // import android.graphics.SurfaceTexture;
@@ -24,6 +28,7 @@ import android.os.Bundle;
 import android.util.Log;
 // import android.util.Size;
 // import android.util.SparseIntArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 // import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -31,6 +36,9 @@ import android.view.SurfaceView;
 // import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -79,7 +87,9 @@ implements View.OnClickListener
     private ProgressBar determinateBar;
     private View progressBarLayout;
     private TextView progressBarText;
-    ArrayList<String> strings;
+    private TextView instructionText;
+    private ArrayList<String> strings;
+    private String userInstruction;
 
     // private MediaController mediaController;
 
@@ -100,6 +110,8 @@ implements View.OnClickListener
         strings.add("Printing tickets");
         strings.add("Counting dribbles");
         strings.add("Training referees");
+
+        userInstruction = "Review and Save your video.  Retake to record a new one";
     }
 
     public void destroyYourself() {
@@ -167,6 +179,14 @@ implements View.OnClickListener
         int progressBarTextId = ThisPlugin.getAppResource(activity, "progressBarText", "id");
         progressBarText = (TextView) view.findViewById(progressBarTextId);
 
+        int instructionTextId = ThisPlugin.getAppResource(activity, "instruction", "id");
+        instructionText = (TextView) view.findViewById(instructionTextId);
+        instructionText.setText(userInstruction);
+        if(!ThisPlugin.seenMediaInstructions) {
+            instructionText.setVisibility(View.INVISIBLE);
+            ThisPlugin.seenMediaInstructions = true;
+        }
+
         videoPlayer.setVideoPath(this.video.fullFilename);
         Log.d(ThisPlugin.TAG, "onViewCreated - video path setup");
 
@@ -215,6 +235,9 @@ implements View.OnClickListener
     @Override
     public void onClick(View view) {
         int id = view.getId();
+
+        instructionText.setVisibility(View.INVISIBLE);
+        
         if(id == playButtonId) {
             Log.d(ThisPlugin.TAG, "PLAY Button clicked");
             playVideo();
@@ -227,6 +250,9 @@ implements View.OnClickListener
                 reviewButtons.setVisibility(View.GONE);
                 cancelButton.setVisibility(View.GONE);
                 progressBarLayout.setVisibility(View.VISIBLE);
+                instructionText.setVisibility(View.VISIBLE);
+                instructionText.setText("We are saving your video.  This may take a moment based on your connection.");
+        
                 Upload(this.video); 
             } catch(Exception ex) {
                 Log.e(ThisPlugin.TAG, "reviewButtons.setVisibility(View.GONE) threw an exception", ex);
@@ -239,14 +265,38 @@ implements View.OnClickListener
         }
         else if(id == cancelButtonId) {
             Log.d(ThisPlugin.TAG, "CANCEL Button clicked");
-            eventHandler.CancelRequested();
-            DeleteFile();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+            builder.setTitle("Warning");
+            builder.setMessage("You are about to leave this section of the test and will lose any data")
+                .setCancelable(false)
+                .setPositiveButton("OK", new OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        eventHandler.CancelRequested();
+                        DeleteFile();
+                    }
+                })
+                .setNegativeButton("Cancel",new OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+
+            // create alert dialog
+            AlertDialog alertDialog = builder.create();
+            Window window = alertDialog.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+
+            wlp.gravity = Gravity.CENTER;
+//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(wlp);
+
+            alertDialog.show();
         }
         else {
             Log.d(ThisPlugin.TAG, "Something clicked but we don't know what");
         }
     }
-
 
     private void Upload(Video video) {
         try {
