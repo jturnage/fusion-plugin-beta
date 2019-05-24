@@ -487,16 +487,24 @@ public class CameraFragment extends Fragment
 //        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         Log.d(ThisPlugin.TAG, "setUpMediaRecorder - setup encoders");
 
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        Integer rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        video.deviceRotation = rotation;
+        Log.d(ThisPlugin.TAG, "setUpMediaRecorder - window rotation:"+rotation);
+        Log.d(ThisPlugin.TAG, "setUpMediaRecorder - sensor orientation:"+camera.config.mSensorOrientation);
+
         switch (camera.config.mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
+                Log.d(ThisPlugin.TAG, "setUpMediaRecorder - sensor orientation is default");
                 mMediaRecorder.setOrientationHint(DEFAULT_ORIENTATIONS.get(rotation));
                 break;
             case SENSOR_ORIENTATION_INVERSE_DEGREES:
+                Log.d(ThisPlugin.TAG, "setUpMediaRecorder - sensor orientation is inverse");
                 mMediaRecorder.setOrientationHint(INVERSE_ORIENTATIONS.get(rotation));
                 break;
+            default:
+                Log.e(ThisPlugin.TAG, "setUpMediaRecorder - sensor orientation is not default or inverse, something else!!!");
+                break;
         }
-        Log.d(ThisPlugin.TAG, "setUpMediaRecorder - set orientation");
 
         mMediaRecorder.prepare();
     }
@@ -508,6 +516,7 @@ public class CameraFragment extends Fragment
         video.fullFilename = getVideoFilePath(activity, dir);
         video.actualWidth = camera.config.mVideoSize.getWidth();
         video.actualHeight = camera.config.mVideoSize.getHeight();
+        video.sensorOrientation = camera.config.mSensorOrientation;
         return video;
     }
 

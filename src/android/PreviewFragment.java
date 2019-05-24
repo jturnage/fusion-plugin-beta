@@ -315,13 +315,15 @@ implements View.OnClickListener
                 formFields.put("bodySideId", Integer.toString(ThisPlugin.exercise.bodySideId));
             }
 
-            if((ThisPlugin.settings.desiredVideoWidth != video.actualWidth) || 
-               (ThisPlugin.settings.desiredVideoHeight != video.actualHeight)) {
+            // if((ThisPlugin.settings.desiredVideoWidth != video.actualWidth) || 
+            //    (ThisPlugin.settings.desiredVideoHeight != video.actualHeight)) {
                 // formFields.put("desiredVideoWidth", ThisPlugin.settings.desiredVideoWidth != null ? Integer.toString(ThisPlugin.settings.desiredVideoWidth) : null);
                 // formFields.put("desiredVideoHeight", ThisPlugin.settings.desiredVideoHeight != null ? Integer.toString(ThisPlugin.settings.desiredVideoHeight) : null);
-                formFields.put("width", video.actualWidth != null ? Integer.toString(video.actualWidth) : null);
-                formFields.put("height", video.actualHeight != null ? Integer.toString(video.actualHeight) : null);
-            }
+            formFields.put("width", video.actualWidth != null ? Integer.toString(video.actualWidth) : null);
+            formFields.put("height", video.actualHeight != null ? Integer.toString(video.actualHeight) : null);
+            formFields.put("orientation", video.sensorOrientation != null ? Integer.toString(video.sensorOrientation) : null);
+            formFields.put("rotation", video.deviceRotation != null ? Integer.toString(video.deviceRotation) : null);
+            // }
 
             Log.d(ThisPlugin.TAG, "Setting files map...");
 

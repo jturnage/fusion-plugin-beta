@@ -6,8 +6,9 @@ public class Video {
     public Integer actualHeight;
     public String fullFilename;
     public String path;
-    public Integer actualOrientation;
+    public Integer sensorOrientation;
     public Integer actualCamera;
+    public Integer deviceRotation;
 
     // public Integer desiredWidth;
     // public Integer desiredHeight;
