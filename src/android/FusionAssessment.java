@@ -114,19 +114,9 @@ public class FusionAssessment extends CordovaPlugin {
         @Override
         public void CancelRequested() {
             Log.d(ThisPlugin.TAG, "BodyMapEventHandler.CancelRequested");
-
-            killShowVideoWorkerView();
-            killTakeVideoWorkerView();
-
-            Log.d(TAG, "setting contentView");
-            cordova.getActivity().setContentView(webView.getView());
-    
             FusionResult result = new FusionResult();
             result.setCancelled(true);
-            String d = result.toJson();
-            Log.d(ThisPlugin.TAG, "Returning json: " + d);
-
-            callbackContext.success(d);
+            endWithResponse(result);
         }
 
         @Override
@@ -148,23 +138,24 @@ public class FusionAssessment extends CordovaPlugin {
 
         @Override public void RecordedVideoUploaded(Video video) {
             Log.d(ThisPlugin.TAG, "BodyMapEventHandler.RecordedVideoUploaded");
-
-            killShowVideoWorkerView();
-            killTakeVideoWorkerView();
-
-            Log.d(TAG, "setting contentView");
-            cordova.getActivity().setContentView(webView.getView());
-    
             FusionResult result = new FusionResult();
-            // result.setCancelled(true);
             result.setCapturedVideo(true);
             result.setVideoUrl(ThisPlugin.exercise.videoUrl);
-            String d = result.toJson();
-            Log.d(ThisPlugin.TAG, "Returning json: " + d);
-
-            callbackContext.success(d);
+            endWithResponse(result);
         }
     };
+
+    private void endWithResponse(FusionResult result) {
+        killShowVideoWorkerView();
+        killTakeVideoWorkerView();
+
+        Log.d(TAG, "setting contentView");
+        cordova.getActivity().setContentView(webView.getView());
+
+        String d = result.toJson();
+        Log.d(ThisPlugin.TAG, "Returning json: " + d);
+        callbackContext.success(d);
+    }
 
     private void showVideo(Video video) {
         Log.d(TAG, "In showVideo");
@@ -176,16 +167,10 @@ public class FusionAssessment extends CordovaPlugin {
                 showVideoWorker(video);
             }
         });
-
     }
 
-
     private void takeVideo() {
-
         Log.d(TAG, "In takeVideo");
-
-        // FILE_NAME = args.getString(0);
-        // final String cameraFace = args.getString(1);
 
         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -218,9 +203,6 @@ public class FusionAssessment extends CordovaPlugin {
             // // Get screen dimensions
             // DisplayMetrics displaymetrics = new DisplayMetrics();
             // cordova.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(displaymetrics);
-
-            // Log.d(TAG, "Got displayMetrics");
-
             FrameLayout _frameLayout = new FrameLayout(cordova.getActivity().getApplicationContext());
             _frameLayout.setId(SHOWVIDEO_VIEW_ID);
             _frameLayout.setBackgroundColor(Color.parseColor("#FFFDDB"));
@@ -267,7 +249,7 @@ public class FusionAssessment extends CordovaPlugin {
         try {
             Log.d(ThisPlugin.TAG, "getView");
             // I've seen this in a few places on SO so just going with it. I'm not sure why 
-            // webView.getView() wouldn't work (and maybe it does..? i haven't tried, just kinda using this blindly)
+            // webView.getView() wouldn't work (and maybe it does..? i haven't tried, just kinda using this since I've seen it several places and can confirm it works)
             return (View)webView.getClass().getMethod("getView").invoke(webView);
         } catch (Exception e) {
             Log.e(ThisPlugin.TAG, "getView exception", e);
@@ -275,22 +257,21 @@ public class FusionAssessment extends CordovaPlugin {
         }
     }
 
-
     public void onRequestPermissionResult(
             int requestCode, 
             /*@NonNull*/ String[] permissions,
             /*@NonNull*/ int[] grantResults) {
 
         Log.d(TAG, "onRequestPermissionResult");
-        for(int r: grantResults) {
-
-            if(r == PackageManager.PERMISSION_DENIED)
-            {
-                Log.d(TAG, "onRequestPermissionResult");
-                this.callbackContext.error("permission denied");
-                return;
-            }
-
+        if(grantResults != null) {
+            for(int r: grantResults) {
+                if(r == PackageManager.PERMISSION_DENIED)
+                {
+                    Log.d(TAG, "onRequestPermissionResult");
+                    this.callbackContext.error("permission denied");
+                    return;
+                }
+            }    
         }
 
         if(requestCode == REQUEST_VIDEO_PERMISSIONS) {

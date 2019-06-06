@@ -88,7 +88,7 @@ implements View.OnClickListener
     private View progressBarLayout;
     private TextView progressBarText;
     private TextView instructionText;
-    private ArrayList<String> strings;
+    // private ArrayList<String> strings;
     private String userInstruction;
 
     // private MediaController mediaController;
@@ -98,18 +98,19 @@ implements View.OnClickListener
         this.eventHandler = _eventHandler;
         this.video = video;
 
-        strings = new ArrayList<String>();
-        strings.add("Measuring jump height");
-        strings.add("Blowing up basket balls");
-        strings.add("Painting free throw lines");
-        strings.add("Hanging nets");
-        strings.add("Testing arena acoustics");
-        strings.add("Relacing sneakers");
-        strings.add("Getting sponsors");
-        strings.add("Washing jerseys");
-        strings.add("Printing tickets");
-        strings.add("Counting dribbles");
-        strings.add("Training referees");
+        // Cute percentage strings placeholders my daughter and I came up with just to be funny.
+        // strings = new ArrayList<String>();
+        // strings.add("Measuring jump height");
+        // strings.add("Blowing up basket balls");
+        // strings.add("Painting free throw lines");
+        // strings.add("Hanging nets");
+        // strings.add("Testing arena acoustics");
+        // strings.add("Relacing sneakers");
+        // strings.add("Getting sponsors");
+        // strings.add("Washing jerseys");
+        // strings.add("Printing tickets");
+        // strings.add("Counting dribbles");
+        // strings.add("Training referees");
 
         userInstruction = "Review and Save your video.  Retake to record a new one";
     }
@@ -337,7 +338,11 @@ implements View.OnClickListener
                     Log.d(ThisPlugin.TAG, "handled percent: " + percent);
                     determinateBar.setProgress(percent);
 
-                    progressBarText.setText(strings.get(percent/10) + " (" + Integer.toString(percent) + "%)");
+                    if(percent < 100) {
+                        progressBarText.setText(Integer.toString(percent) + "%");
+                    } else {
+                        progressBarText.setText("Processing, please wait...");
+                    }
                 }
                 @Override public void OnCompleted() {
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnCompleted handler");

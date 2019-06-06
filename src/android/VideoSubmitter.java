@@ -39,6 +39,8 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
     private final String boundary =  "*****";
     private final String crlf = "\r\n";
     private final String twoHyphens = "--";
+    private final String endingSeparator = crlf + twoHyphens + boundary + twoHyphens + crlf;
+    private final String formFieldSeparator = twoHyphens + boundary + crlf;
     // private ProgressDialog progressDialog;
     private UploadEventHandler context;
     long currentFileSize = 0;
@@ -68,23 +70,21 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true); // indicates POST method
         httpConn.setDoInput(true);
-
         httpConn.setRequestMethod("POST");
-        httpConn.setRequestProperty("Connection", "Keep-Alive");
-        httpConn.setRequestProperty("Cache-Control", "no-cache");
-        httpConn.setRequestProperty(
-                "Content-Type", "multipart/form-data;boundary=" + this.boundary);
 
         addHeaders();
 
         Log.d(ThisPlugin.TAG, "VideoSubmitter.setupConnection - about to set up stream");
-
         httpConn.getOutputStream();
 
         request = new DataOutputStream(httpConn.getOutputStream());
     }
 
     private void addHeaders() {
+        httpConn.setRequestProperty("Connection", "Keep-Alive");
+        httpConn.setRequestProperty("Cache-Control", "no-cache");
+        httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
+
         if(headers != null) {
             for(Map.Entry<String, String> entry : headers.entrySet()) {
                 httpConn.setRequestProperty (entry.getKey(), entry.getValue());
@@ -129,7 +129,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
 
             Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - about to write ending stuff");
 
-            request.writeBytes(this.crlf + this.twoHyphens + this.boundary + this.twoHyphens + this.crlf);
+            request.writeBytes(this.endingSeparator);
 
             Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - bytes written");
             request.flush();
@@ -143,27 +143,10 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
 
             if (status == HttpURLConnection.HTTP_OK) {
                 Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - returned OK response"); //  + response
-
-            //     InputStream responseStream = new BufferedInputStream(httpConn.getInputStream());
-
-            //     BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
-
-            //     String line = "";
-            //     StringBuilder stringBuilder = new StringBuilder();
-
-            //     while ((line = responseStreamReader.readLine()) != null) {
-            //         stringBuilder.append(line).append("\n");
-            //     }
-            //     responseStreamReader.close();
-
-            //     // response = stringBuilder.toString();
-
-            //     Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - response:"); //  + response
-
-
             } else {
                 throw new IOException("Server returned non-OK status: " + status);
             }
+            String response = getResponse();
 
             httpConn.disconnect();
         }
@@ -171,6 +154,36 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
             Log.e(ThisPlugin.TAG, "VideoSubmitter.doInBackground exception: " + ex.getMessage(), ex);
         }
 
+        return null;
+    }
+
+    private String getResponse() {
+        try {
+            InputStream responseStream = new BufferedInputStream(httpConn.getInputStream());
+            if(responseStream != null) {
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
+    
+                String line = "";
+                StringBuilder stringBuilder = new StringBuilder();
+        
+                while ((line = responseStreamReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+                responseStreamReader.close();
+        
+                response = stringBuilder.toString();
+        
+                Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - response:"+ response);
+                return response;
+            } else {
+                Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - connection didn't get a response stream");
+            }
+    
+        } catch(IOException ioEx) {
+            Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - IOException thrown", ioEx);
+        } catch (UnknownServiceException serviceEx) {
+            Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - UnknownServiceException thrown", serviceEx);
+        }
         return null;
     }
 
@@ -182,7 +195,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
      */
     private void addFormField(String name, String value)throws IOException  {
         Log.d(ThisPlugin.TAG, "addFormField: " + name + "=" + value);
-        request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
+        request.writeBytes(this.formFieldSeparator);
         request.writeBytes("Content-Disposition: form-data; name=\"" + name + "\""+ this.crlf);
         request.writeBytes("Content-Type: text/plain; charset=UTF-8" + this.crlf);
         request.writeBytes(this.crlf);
@@ -204,7 +217,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
         Log.d(ThisPlugin.TAG, "addFilePart: " + fieldName);
 
         String fileName = uploadFile.getName();
-        request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
+        request.writeBytes(this.formFieldSeparator);
         request.writeBytes("Content-Disposition: form-data; name=\"" +
                 fieldName + "\";filename=\"" +
                 fileName + "\"" + 

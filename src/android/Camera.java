@@ -54,17 +54,24 @@ public class Camera extends CameraDevice.StateCallback {
     @Override
     public void onDisconnected( CameraDevice cameraDevice) {
         mCameraOpenCloseLock.release();
-        cameraDevice.close();
-        mCameraDevice = null;
+        mCameraDevice = cameraDevice;
+        closeCameraDevice();
     }
 
     @Override
     public void onError( CameraDevice cameraDevice, int error) {
         mCameraOpenCloseLock.release();
-        cameraDevice.close();
-        mCameraDevice = null;
+        mCameraDevice = cameraDevice;
+        closeCameraDevice();
         if(onError != null)
             onError.run();
+    }
+
+    private void closeCameraDevice() {
+        if (mCameraDevice != null) {
+            mCameraDevice.close();
+            mCameraDevice = null;
+        }
     }
 
     public boolean isInitialized() {
@@ -111,10 +118,7 @@ public class Camera extends CameraDevice.StateCallback {
         Log.d(ThisPlugin.TAG, "camera.Close (instance)");
         try {
             mCameraOpenCloseLock.acquire();
-            if (null != mCameraDevice) {
-                mCameraDevice.close();
-                mCameraDevice = null;
-            }
+            closeCameraDevice();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.");
         } finally {
@@ -122,7 +126,6 @@ public class Camera extends CameraDevice.StateCallback {
         }
 
         stopBackgroundThread();
-
     }
 
     public Handler getBackgroundHandler() {
@@ -132,6 +135,7 @@ public class Camera extends CameraDevice.StateCallback {
 
     private void startBackgroundThread() {
         Log.d(ThisPlugin.TAG, "startBackgroundThread");
+        stopBackgroundThread();
         mBackgroundThread = new HandlerThread("CameraBackground");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
@@ -223,9 +227,10 @@ public class Camera extends CameraDevice.StateCallback {
         for (Size size : choices) {
             int width = size.getWidth();
             int height = size.getHeight();
-            Log.d(ThisPlugin.TAG, "chooseExactVideoSize - width:"+width + " height:"+height);
+            Log.d(ThisPlugin.TAG, "chooseExactVideoSize - orientation:" + orientation + " width:" + width + " height:" + height);
             if((orientation == Configuration.ORIENTATION_PORTRAIT && width == desiredWidth && height == desiredHeight) || 
                (orientation == Configuration.ORIENTATION_LANDSCAPE && width == desiredHeight && height == desiredWidth)) {
+                Log.d(ThisPlugin.TAG, "Bingo...");
                 return size;
             }
         }
@@ -239,7 +244,7 @@ public class Camera extends CameraDevice.StateCallback {
             int width = size.getWidth();
             int height = size.getHeight();
 
-            Log.d(ThisPlugin.TAG, "chooseBestVideoSizeWithSameAspectRatio - width:"+width + " height:"+height);
+            Log.d(ThisPlugin.TAG, "chooseBestVideoSizeWithSameAspectRatio - orientation:" + orientation + " width:"+width + " height:"+height);
 
             // If it's too small in either direction, we don't want it.  We want at least as big as the desired size, not smaller
             if((orientation == Configuration.ORIENTATION_PORTRAIT && (width < desiredWidth || height < desiredHeight)) ||
@@ -272,7 +277,7 @@ public class Camera extends CameraDevice.StateCallback {
             int width = size.getWidth();
             int height = size.getHeight();
 
-            Log.d(ThisPlugin.TAG, "chooseSmallestVideoSizeThatsBiggerThanDesired - width:"+width + " height:"+height);
+            Log.d(ThisPlugin.TAG, "chooseSmallestVideoSizeThatsBiggerThanDesired - orientation:" + orientation + " width:"+width + " height:"+height);
 
             // If it's too small in either direction, we don't want it.  We want at least as big as the desired size, not smaller
             if((orientation == Configuration.ORIENTATION_PORTRAIT && (width < desiredWidth || height < desiredHeight)) ||

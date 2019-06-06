@@ -290,8 +290,8 @@ public class CameraFragment extends Fragment
         try {
             setUpCaptureRequestBuilder(mPreviewBuilder);
             // TODO: this appears to just create and start an orphaned thread.
-            HandlerThread thread = new HandlerThread("CameraPreview");
-            thread.start();
+            // HandlerThread thread = new HandlerThread("CameraPreview");
+            // thread.start();
             mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), null, camera.getBackgroundHandler());
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -426,8 +426,10 @@ public class CameraFragment extends Fragment
         mButtonVideo.setImageResource(imageId);
 
         // Stop recording
-        mMediaRecorder.stop();
-        mMediaRecorder.reset();
+        if(mMediaRecorder != null) {
+            mMediaRecorder.stop();
+            mMediaRecorder.reset();
+        }
 
         if (null != activity) {
             Log.d(ThisPlugin.TAG, "Video saved: " + video.fullFilename);
