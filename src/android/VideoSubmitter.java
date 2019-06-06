@@ -171,7 +171,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
                 }
                 responseStreamReader.close();
         
-                response = stringBuilder.toString();
+                String response = stringBuilder.toString();
         
                 Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - response:"+ response);
                 return response;
