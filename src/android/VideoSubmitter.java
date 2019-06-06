@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.UnknownServiceException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
