@@ -180,10 +180,10 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
                 Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - connection didn't get a response stream");
             }
     
-        } catch(IOException ioEx) {
-            Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - IOException thrown", ioEx);
         } catch (UnknownServiceException serviceEx) {
             Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - UnknownServiceException thrown", serviceEx);
+        } catch(IOException ioEx) {
+            Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - IOException thrown", ioEx);
         }
         return null;
     }
