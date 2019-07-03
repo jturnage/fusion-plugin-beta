@@ -333,6 +333,7 @@ implements View.OnClickListener
             files.put(ThisPlugin.exercise.filePrefix + "-video.mp4", inputFile);
 
             Log.d(ThisPlugin.TAG, "Instance of video submitter...");
+            final Video videoInner = video;
             UploadEventHandler events = new UploadEventHandler() {
                 @Override public void OnProgress(int percent) {
                     Log.d(ThisPlugin.TAG, "handled percent: " + percent);
@@ -346,9 +347,18 @@ implements View.OnClickListener
                 }
                 @Override public void OnCompleted() {
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnCompleted handler");
-                    eventHandler.RecordedVideoUploaded(video);
+                    eventHandler.RecordedVideoUploaded(videoInner);
                     DeleteFile();
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnCompleted - input file deleted");
+                }
+                @Override public void OnFailure() {
+                    Log.d(ThisPlugin.TAG, "PreviewFragment - OnFailure handler");
+
+                    reviewButtons.setVisibility(View.VISIBLE);
+                    cancelButton.setVisibility(View.VISIBLE);
+                    progressBarLayout.setVisibility(View.GONE);
+                    instructionText.setVisibility(View.VISIBLE);
+                    instructionText.setText("There was a problem saving your video.  Please try again.");
                 }
             };
 

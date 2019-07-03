@@ -12,5 +12,4 @@ public abstract class BodymapEventHandler {
     public void RecordedVideoAccepted(Video video) {}
 
     public void RecordedVideoUploaded(Video video) {}
-
 }

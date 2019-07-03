@@ -4,6 +4,7 @@ import com.fusionetics.plugins.bodymap.ThisPlugin;
 import com.fusionetics.plugins.bodymap.FusioneticsExercise;
 import com.fusionetics.plugins.bodymap.ApiSettings;
 import com.fusionetics.plugins.bodymap.UploadEventHandler;
+import com.fusionetics.plugins.bodymap.Objects.UploadResult;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,7 +19,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.UnknownServiceException;
 import java.net.URL;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -30,7 +31,7 @@ import android.content.Context;
 
 
 //https://stackoverflow.com/questions/11766878/sending-files-using-post-with-httpurlconnection
-public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
+public class VideoSubmitter extends AsyncTask<Void, Long, UploadResult> {
     private HttpURLConnection httpConn;
     private DataOutputStream request;
     private String requestURL;
@@ -44,6 +45,9 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
     private final String formFieldSeparator = twoHyphens + boundary + crlf;
     // private ProgressDialog progressDialog;
     private UploadEventHandler context;
+
+    private int connectionTransferBufferChunkSize = 256 * 1024;
+
     long currentFileSize = 0;
 
     /**
@@ -68,6 +72,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
         Log.d(ThisPlugin.TAG, "VideoSubmitter.setupConnection - url:" + requestURL);
         URL url = new URL(requestURL);
         httpConn = (HttpURLConnection) url.openConnection();
+        httpConn.setChunkedStreamingMode(connectionTransferBufferChunkSize);
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true); // indicates POST method
         httpConn.setDoInput(true);
@@ -104,8 +109,12 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
     }
 
     @Override
-    protected void onPostExecute(Void v) {
-        context.OnCompleted();
+    protected void onPostExecute(UploadResult result) {
+        if(result.WasSuccessful()) {
+            context.OnCompleted();
+        } else {
+            context.OnFailure();
+        }
     }
 
     @Override
@@ -115,15 +124,18 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
             if(currentFileSize == 0)
                 context.OnProgress(0);
             else
-                context.OnProgress((int)(i*100/currentFileSize));
+                // Progress as an integer, but only 9/10 so we don't just jump to 100% quickly then
+                // have to wait for the server for several more seconds.  Instead, it'll stop around
+                // 75% for a while
+                context.OnProgress((int)((i*100 * 9)/(currentFileSize * 10)));
         }
     }
 
     @Override
-    protected Void doInBackground(Void... s) {
+    protected UploadResult doInBackground(Void... s) {
 
         Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground");
-
+        UploadResult result = new UploadResult();
         try {
             setupConnection();
             addFormFieldsAndFiles();
@@ -144,42 +156,49 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
 
             if (status == HttpURLConnection.HTTP_OK) {
                 Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - returned OK response"); //  + response
+                result.SetSuccess(getResponse(httpConn.getInputStream()));
             } else {
-                throw new IOException("Server returned non-OK status: " + status);
+                result.SetFailure(getResponse(httpConn.getErrorStream()));
             }
-            String response = getResponse();
 
             httpConn.disconnect();
         }
         catch(Exception ex) {
             Log.e(ThisPlugin.TAG, "VideoSubmitter.doInBackground exception: " + ex.getMessage(), ex);
+            result.SetFailure(ex.getMessage(), ex);
         }
 
-        return null;
+        return result;
     }
 
-    private String getResponse() {
+    private String getResponse(InputStream inputStream) {
         try {
-            InputStream responseStream = new BufferedInputStream(httpConn.getInputStream());
-            if(responseStream != null) {
-                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
-    
-                String line = "";
-                StringBuilder stringBuilder = new StringBuilder();
+
+            if(inputStream != null) {
+
+                InputStream responseStream = new BufferedInputStream(inputStream);
+                if(responseStream != null) {
+
+                    BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
         
-                while ((line = responseStreamReader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
+                    String line = "";
+                    StringBuilder stringBuilder = new StringBuilder();
+            
+                    while ((line = responseStreamReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    responseStreamReader.close();
+            
+                    String response = stringBuilder.toString();
+            
+                    Log.d(ThisPlugin.TAG, "VideoSubmitter.getResponse - response:"+ response);
+                    return response;
+                } else {
+                    Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - inputStream couldn't be buffered");
                 }
-                responseStreamReader.close();
-        
-                String response = stringBuilder.toString();
-        
-                Log.d(ThisPlugin.TAG, "VideoSubmitter.doInBackground - response:"+ response);
-                return response;
             } else {
-                Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - connection didn't get a response stream");
-            }
-    
+                Log.d(ThisPlugin.TAG, "VideoSubmitter.getResponse - inputStream is null:");                
+            }    
         } catch (UnknownServiceException serviceEx) {
             Log.e(ThisPlugin.TAG, "VideoSubmitter.getResponse - UnknownServiceException thrown", serviceEx);
         } catch(IOException ioEx) {
@@ -201,7 +220,6 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
         request.writeBytes("Content-Type: text/plain; charset=UTF-8" + this.crlf);
         request.writeBytes(this.crlf);
         request.writeBytes(value+ this.crlf);
-        request.flush();
         Log.d(ThisPlugin.TAG, "addFormField done");
     }
 
@@ -226,7 +244,7 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
 
         long progress = 0;
         int bytesRead = 0;
-        int bufSize = 8 * 1024;
+        int bufSize = 64 * 1024;
         byte buf[] = new byte[bufSize];
 
         currentFileSize = uploadFile.length();
@@ -236,7 +254,6 @@ public class VideoSubmitter extends AsyncTask<Void, Long, Void> {
         while ((bytesRead = bufInput.read(buf)) != -1) {
           // write output
           request.write(buf, 0, bytesRead);
-          request.flush();
           progress += bytesRead;
           // update progress bar
           publishProgress(progress);

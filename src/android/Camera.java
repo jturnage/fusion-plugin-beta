@@ -83,14 +83,17 @@ public class Camera extends CameraDevice.StateCallback {
     };
 
     public void createCaptureSession(List<Surface> surfaces, CaptureSessionConfigured onceConfigured) throws CameraAccessException {
+
+        final CaptureSessionConfigured onceConfiguredInner = onceConfigured;
+
         mCameraDevice.createCaptureSession(surfaces,
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
                         public void onConfigured(/*@NonNull*/ CameraCaptureSession session) {
-                            if(onceConfigured != null) {
+                            if(onceConfiguredInner != null) {
                                 Log.d(ThisPlugin.TAG, "createCaptureSession onConfigured");
-                                onceConfigured.onConfigured(session);
+                                onceConfiguredInner.onConfigured(session);
                             }
                         }
 

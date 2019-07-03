@@ -126,11 +126,6 @@ public class FusionAssessment extends CordovaPlugin {
         }
 
         @Override
-        public void RecordedVideoAccepted(Video video) {
-            Log.d(ThisPlugin.TAG, "BodyMapEventHandler.RecordedVideoAccepted");
-        }
-
-        @Override
         public void RetakeVideoRequested(Video video) {
             Log.d(ThisPlugin.TAG, "BodyMapEventHandler.RetakeVideoRequested");
             takeVideo();
@@ -160,11 +155,13 @@ public class FusionAssessment extends CordovaPlugin {
     private void showVideo(Video video) {
         Log.d(TAG, "In showVideo");
 
+        final Video videoInner = video;
+
         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "In showVideo - UI thread");
-                showVideoWorker(video);
+                showVideoWorker(videoInner);
             }
         });
     }
