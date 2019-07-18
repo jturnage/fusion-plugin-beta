@@ -15,5 +15,5 @@ public class ThisPlugin {
     public static FusioneticsExercise exercise = null;
 
     public static Boolean seenMediaInstructions = false;
-    
+    public static Boolean debug = false;
 }

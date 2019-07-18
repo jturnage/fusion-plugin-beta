@@ -3,6 +3,7 @@ package com.fusionetics.plugins.bodymap;
 import com.fusionetics.plugins.bodymap.ThisPlugin;
 // import com.fusionetics.plugins.bodymap.AutoFitTextureView;
 import com.fusionetics.plugins.bodymap.BodymapEventHandler;
+import com.fusionetics.plugins.bodymap.ProgressBarHandler;
 import com.fusionetics.plugins.bodymap.Objects.Video;
 
 import android.Manifest;
@@ -24,6 +25,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.os.Bundle;
+import android.os.Handler;
 // import android.os.HandlerThread;
 import android.util.Log;
 // import android.util.Size;
@@ -90,6 +92,7 @@ implements View.OnClickListener
     private TextView instructionText;
     // private ArrayList<String> strings;
     private String userInstruction;
+    private ProgressBarHandler progressBarHandler;
 
     // private MediaController mediaController;
 
@@ -187,6 +190,8 @@ implements View.OnClickListener
             instructionText.setVisibility(View.INVISIBLE);
             ThisPlugin.seenMediaInstructions = true;
         }
+
+        progressBarHandler = new ProgressBarHandler(activity, determinateBar, progressBarText);
 
         videoPlayer.setVideoPath(this.video.fullFilename);
         Log.d(ThisPlugin.TAG, "onViewCreated - video path setup");
@@ -334,19 +339,16 @@ implements View.OnClickListener
 
             Log.d(ThisPlugin.TAG, "Instance of video submitter...");
             final Video videoInner = video;
+
+            progressBarHandler.Start();
+
             UploadEventHandler events = new UploadEventHandler() {
                 @Override public void OnProgress(int percent) {
-                    Log.d(ThisPlugin.TAG, "handled percent: " + percent);
-                    determinateBar.setProgress(percent);
-
-                    if(percent < 100) {
-                        progressBarText.setText(Integer.toString(percent) + "%");
-                    } else {
-                        progressBarText.setText("Processing, please wait...");
-                    }
+                    progressBarHandler.UpdateProgress(percent);
                 }
                 @Override public void OnCompleted() {
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnCompleted handler");
+                    progressBarHandler.End();
                     eventHandler.RecordedVideoUploaded(videoInner);
                     DeleteFile();
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnCompleted - input file deleted");
@@ -354,6 +356,7 @@ implements View.OnClickListener
                 @Override public void OnFailure() {
                     Log.d(ThisPlugin.TAG, "PreviewFragment - OnFailure handler");
 
+                    progressBarHandler.End();
                     reviewButtons.setVisibility(View.VISIBLE);
                     cancelButton.setVisibility(View.VISIBLE);
                     progressBarLayout.setVisibility(View.GONE);

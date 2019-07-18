@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Random;
 
 import android.util.Log;
 import android.os.AsyncTask;
@@ -251,16 +252,22 @@ public class VideoSubmitter extends AsyncTask<Void, Long, UploadResult> {
         Log.d(ThisPlugin.TAG, "Writing file: " + uploadFile.getName() + ", file size: " + uploadFile.length());
 
         BufferedInputStream bufInput = new BufferedInputStream(new FileInputStream(uploadFile));
+        Random rand = new Random();
+        int testMin = 100;
+        int testMax = 500;
+
         while ((bytesRead = bufInput.read(buf)) != -1) {
           // write output
           request.write(buf, 0, bytesRead);
           progress += bytesRead;
           // update progress bar
           publishProgress(progress);
-          try {
-            Thread.sleep(1);
-          } catch(InterruptedException e) {
-            Log.d(ThisPlugin.TAG, "Thread.sleep threw an exception");
+          if(ThisPlugin.debug) {
+            try {
+                Thread.sleep(rand.nextInt(testMax - testMin + 1) + testMin);
+            } catch(InterruptedException e) {
+                Log.d(ThisPlugin.TAG, "Thread.sleep threw an exception");
+            }
           }
         }
     }

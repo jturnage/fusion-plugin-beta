@@ -89,6 +89,7 @@
         <source-file src="src/android/ApiSettings.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
         <source-file src="src/android/VideoSubmitter.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
         <source-file src="src/android/FusionResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+        <source-file src="src/android/ProgressBarHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
 
         <source-file src="src/android/Objects/Video.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
         <source-file src="src/android/Objects/UploadResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
