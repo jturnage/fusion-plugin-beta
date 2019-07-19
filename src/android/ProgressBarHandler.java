@@ -2,6 +2,7 @@ package com.fusionetics.plugins.bodymap;
 
 import com.fusionetics.plugins.bodymap.ThisPlugin;
 import com.fusionetics.plugins.bodymap.BodymapEventHandler;
+import com.fusionetics.plugins.bodymap.Objects.EMASet;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -26,12 +27,12 @@ public class ProgressBarHandler
     private int remainingProgress = 0;
     private int recentProgress = 0;
     private int remainingTimeInSeconds = 0;
-    private final float currentSmoother = 0.5f;
-    private final float previousSmoother = 0.6f;
 
-    private Stack progressOver3 = new Stack();
-    private double previousSmooth3 = 0.0;
-    private float smoothingFactorFor3 = 1.0f; // .2;
+    private EMASet[] emaSets = {
+        new EMASet(3, .2f), //.3f
+        new EMASet(6, .3f), //.5f
+        new EMASet(10, .5f) //.8f
+    };
 
     ProgressBarHandler(Activity _activity, ProgressBar _progressBar, TextView _progressBarText) {
         this.activity = _activity;
@@ -48,8 +49,8 @@ public class ProgressBarHandler
         remainingProgress = 0;
         remainingTimeInSeconds = 0;
         recentProgress = 0;
-        previousSmooth3 = 0.0;
-        progressOver3.clear();
+
+        EMASet.Reset(emaSets);
     }
 
     public void End() {
@@ -79,7 +80,7 @@ public class ProgressBarHandler
             currentTime++;
             Log.d(ThisPlugin.TAG, "ProgressBarHandler - timerCallback.run: " + currentTime + "sec into it.");
 
-            calculateTimeremainingProgress();
+            calculateTimeRemaining();
             UpdateProgressUI();
             timerHandler.postDelayed(timerCallback, 1000);
         }
@@ -92,9 +93,9 @@ public class ProgressBarHandler
         if(this.currentPercent < 100) {
             String toDisplay = Integer.toString(this.currentPercent) + "%";
             if(this.currentTime > 2) {
-                toDisplay += " " + Integer.toString(this.currentTime) + "s";
+                // toDisplay += " " + Integer.toString(this.currentTime) + "s";
                 if(this.currentTime > 4) {
-                    toDisplay += " " + this.remainingTimeInSeconds < 120 ? Integer.toString(this.remainingTimeInSeconds) + "s remaining" : ">2min remaining";
+                    toDisplay += " (" + (this.remainingTimeInSeconds < 120 ? Integer.toString(this.remainingTimeInSeconds) + "s remaining" : ">2min remaining")+ ")";
                 }
             }
 
@@ -104,25 +105,8 @@ public class ProgressBarHandler
         }
     }
 
-    private int calculateTimeremainingProgress() {
+    private void calculateTimeRemaining() {
         this.lastPercent = this.currentPercent;
-
-        while(this.progressOver3.size() >= 3)
-            this.progressOver3.pop();
-
-        this.progressOver3.push(this.currentPercent);
-        float avgOver3 = 0.0f;
-        for(int i = 0; i < this.progressOver3.size(); i++) {
-            avgOver3 += (int)this.progressOver3.get(i);
-        }
-        avgOver3 /= this.progressOver3.size();
-
-        double currentSmooth3 = this.previousSmooth3 - (previousSmoother * this.previousSmooth3) + (avgOver3 * this.currentSmoother);
-        this.previousSmooth3 = currentSmooth3;
-
-        double remainingBasedOn3 = currentSmooth3 > 0 ? this.remainingProgress / currentSmooth3 : 0.0;
-
-        this.remainingTimeInSeconds = (int)Math.ceil((remainingBasedOn3*smoothingFactorFor3)/(smoothingFactorFor3));
-        return 1;
+        this.remainingTimeInSeconds = EMASet.calculateRemaining(this.emaSets, this.currentPercent);
     }
 }
