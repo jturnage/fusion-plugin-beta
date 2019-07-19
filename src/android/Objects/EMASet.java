@@ -1,6 +1,7 @@
 package com.fusionetics.plugins.bodymap.Objects;
 import com.fusionetics.plugins.bodymap.ThisPlugin;
 
+import android.util.Log;
 import java.util.Stack;
 
 public class EMASet {
@@ -10,8 +11,8 @@ public class EMASet {
     private Stack progresses = new Stack();
     private double previousSmooth = 0.0;
 
-    private static final float previousSmoothingFactor = 0.3f;
-    private static final float currentSmoothingFactor = 0.4f;
+    private static final float previousSmoothingFactor = 0.4f;
+    private static final float currentSmoothingFactor = 0.5f;
     private static double previousSmoothedRemainingTime = 0.0;
 
     public EMASet(int _size, float _smoothingFactor) {
@@ -26,41 +27,42 @@ public class EMASet {
         }
     }
 
-    public static int calculateRemaining(EMASet[] emaSets, int currentPercent) {
+    public static int calculateRemaining(EMASet[] emaSets, int currentPercent, int lastPercent) {
         double resultNumerator = 0.0;
         double resultDenominator = 0.0;
         for(int i = 0 ; i < emaSets.length ; i++) {
             EMASet thisEmaSet = emaSets[i];
-            double result = thisEmaSet.calculateRemaining(currentPercent);
-            resultNumerator += result * thisEmaSet.getFactor();
-            resultDenominator += (double)thisEmaSet.getFactor();
+            double result = thisEmaSet.calculateRemaining(currentPercent, lastPercent);
+            double thisFactor = thisEmaSet.getFactor();
+            resultNumerator += result * thisFactor;
+            resultDenominator += thisFactor;
+            Log.d(ThisPlugin.TAG, "EMASet.calculateRemaining - for:"+thisEmaSet.getSize()+" current:"+currentPercent+" last:"+lastPercent+" result:"+result+" factor:"+thisFactor);
         }
 
-        // int remainingTimeInSeconds = (int)Math.ceil(resultNumerator/(resultDenominator>0.0?resultDenominator:0.1));
         double currentRemainingTime = resultNumerator / (resultDenominator > 0.0 ? resultDenominator : 0.1);
-        double currentSmoothedRemainingTime = previousSmoothedRemainingTime - (previousSmoothingFactor * previousSmoothedRemainingTime) + (currentRemainingTime * currentSmoothingFactor);
+        double currentSmoothedRemainingTime = (previousSmoothedRemainingTime * previousSmoothingFactor) + (currentRemainingTime * currentSmoothingFactor); 
         previousSmoothedRemainingTime = currentSmoothedRemainingTime;
 
         int remainingTimeInSeconds = (int)Math.ceil(currentSmoothedRemainingTime);
+        Log.d(ThisPlugin.TAG, "EMASet.calculateRemaining - numerator:"+resultNumerator + " denominator:"+resultDenominator+" result:"+currentRemainingTime+" ceil:"+remainingTimeInSeconds);
         return remainingTimeInSeconds;
     }
 
-    private double calculateRemaining(int currentPercent) {
+    private double calculateRemaining(int currentPercent, int lastPercent) {
         while(progresses.size() >= size)
             progresses.pop();
 
-        progresses.push(currentPercent);
+        progresses.push(currentPercent-lastPercent);
 
-        float avg = 0.0f;
+        double sum = 0.0f;
         for(int i = 0; i < progresses.size(); i++) {
-            avg += (int)progresses.get(i);
+            sum += (double)(int)(progresses.get(i));
         }
-        avg /= progresses.size();
-        // double currentSmooth = previousSmooth - (previousSmoothingFactor * previousSmooth) + (avg * currentSmoothingFactor);
-        // previousSmooth = currentSmooth;
 
-        // double remaining = currentSmooth > 0 ? (100-currentPercent /*remainingProgress*/) / currentSmooth : 0.0;
+        double avg = (double)sum / (double)progresses.size();
         double remaining = (100-currentPercent)/avg;
+
+        if(size == 3) Log.d(ThisPlugin.TAG, "EMASet.calculateRemaining - for:"+size+" current:"+currentPercent+" last:"+lastPercent+" sum:"+sum+" avg:"+avg+/*" smooth:"+currentSmooth+*/" remain:"+remaining);
         return remaining;
     }
 
@@ -72,6 +74,10 @@ public class EMASet {
     private float getFactor() {
         if(smoothingFactor <= 0.0f) return .001f; // It shouldn't be, just a sanity check
         return smoothingFactor;
+    }
+
+    private int getSize() {
+        return size;
     }
 
 }

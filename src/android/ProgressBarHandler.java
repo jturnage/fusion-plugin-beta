@@ -22,16 +22,14 @@ public class ProgressBarHandler
     private int lastPercent = 0;
     private int currentPercent = 0;
     private int currentTime = 0;
-    // private float averagePercentPerSec = 0f;
     private Handler timerHandler = new Handler();
     private int remainingProgress = 0;
-    private int recentProgress = 0;
     private int remainingTimeInSeconds = 0;
 
     private EMASet[] emaSets = {
-        new EMASet(3, .2f), //.3f
+        new EMASet(3, .5f), //.3f
         new EMASet(6, .3f), //.5f
-        new EMASet(10, .5f) //.8f
+        new EMASet(10, .2f) //.8f
     };
 
     ProgressBarHandler(Activity _activity, ProgressBar _progressBar, TextView _progressBarText) {
@@ -45,11 +43,8 @@ public class ProgressBarHandler
         lastPercent = 0;
         currentPercent = 0;
         currentTime = 0;
-        // averagePercentPerSec = 0f;
         remainingProgress = 0;
         remainingTimeInSeconds = 0;
-        recentProgress = 0;
-
         EMASet.Reset(emaSets);
     }
 
@@ -58,10 +53,7 @@ public class ProgressBarHandler
     }
 
     public void UpdateProgress(int percent) {
-        this.lastPercent = this.currentPercent;
         this.currentPercent = percent;
-        remainingProgress = 100-this.currentPercent;
-        recentProgress = this.currentPercent - this.lastPercent;
 
         UpdateProgressUI();
     }
@@ -80,7 +72,9 @@ public class ProgressBarHandler
             currentTime++;
             Log.d(ThisPlugin.TAG, "ProgressBarHandler - timerCallback.run: " + currentTime + "sec into it.");
 
-            calculateTimeRemaining();
+            remainingTimeInSeconds = EMASet.calculateRemaining(emaSets, currentPercent, lastPercent);
+            lastPercent = currentPercent;
+
             UpdateProgressUI();
             timerHandler.postDelayed(timerCallback, 1000);
         }
@@ -105,8 +99,4 @@ public class ProgressBarHandler
         }
     }
 
-    private void calculateTimeRemaining() {
-        this.lastPercent = this.currentPercent;
-        this.remainingTimeInSeconds = EMASet.calculateRemaining(this.emaSets, this.currentPercent);
-    }
 }

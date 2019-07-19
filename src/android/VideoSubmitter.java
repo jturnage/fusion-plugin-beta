@@ -125,10 +125,9 @@ public class VideoSubmitter extends AsyncTask<Void, Long, UploadResult> {
             if(currentFileSize == 0)
                 context.OnProgress(0);
             else
-                // Progress as an integer, but only 9/10 so we don't just jump to 100% quickly then
-                // have to wait for the server for several more seconds.  Instead, it'll stop around
-                // 75% for a while
-                context.OnProgress((int)((i*100 * 9)/(currentFileSize * 10)));
+                // Progress as an integer, but only 98/100 (so not quite 100%) so we don't just jump to 100% quickly then
+                // have to wait for the server for several more seconds.  Instead, it'll stop around 98% for a little while
+                context.OnProgress((int)((i*100 * 98)/(currentFileSize * 100)));
         }
     }
 
@@ -253,8 +252,8 @@ public class VideoSubmitter extends AsyncTask<Void, Long, UploadResult> {
 
         BufferedInputStream bufInput = new BufferedInputStream(new FileInputStream(uploadFile));
         Random rand = new Random();
-        int testMin = 100;
-        int testMax = 500;
+        int testMin = 500;
+        int testMax = 550;
 
         while ((bytesRead = bufInput.read(buf)) != -1) {
           // write output
