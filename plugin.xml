@@ -94,6 +94,8 @@
         <source-file src="src/android/Objects/Video.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
         <source-file src="src/android/Objects/UploadResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
         <source-file src="src/android/Objects/EMASet.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
+        <source-file src="src/android/Objects/CameraConfig.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
+        <source-file src="src/android/Objects/CaptureSessionConfigured.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
 
         <source-file src="src/android/res/drawable-hdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-hdpi"/>
         <source-file src="src/android/res/drawable-hdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-hdpi"/>

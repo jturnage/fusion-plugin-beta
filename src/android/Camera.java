@@ -1,5 +1,8 @@
 package com.fusionetics.plugins.bodymap;
 
+import com.fusionetics.plugins.bodymap.Objects.CameraConfig;
+import com.fusionetics.plugins.bodymap.Objects.CaptureSessionConfigured;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
@@ -20,14 +23,16 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
+import java.lang.reflect.Array;  
 import java.security.Permission;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
 import java.util.List;
+import java.util.Locale;
 
 
 public class Camera extends CameraDevice.StateCallback {
@@ -78,7 +83,11 @@ public class Camera extends CameraDevice.StateCallback {
         return this.config != null && this.mCameraDevice != null;
     }
 
-    public CaptureRequest.Builder createCaptureRequest() throws CameraAccessException {
+    public CaptureRequest.Builder createCaptureRequestForRecording() throws CameraAccessException {
+        return mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
+    };
+
+    public CaptureRequest.Builder createCaptureRequestForPreview() throws CameraAccessException {
         return mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
     };
 
@@ -100,6 +109,7 @@ public class Camera extends CameraDevice.StateCallback {
                         @Override
                         public void onConfigureFailed(/*@NonNull*/ CameraCaptureSession session) {
                             Log.e(ThisPlugin.TAG, "createCaptureSession onConfigureFailed");
+                            onceConfiguredInner.onFailed(session);
                         }
                     }, mBackgroundHandler);
     }
@@ -178,23 +188,50 @@ public class Camera extends CameraDevice.StateCallback {
             CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
             String cameraId = manager.getCameraIdList()[whichCamera];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+
+            StringBuilder infoBuilder = new StringBuilder("Camera characteristics:\n\n");
+            for (CameraCharacteristics.Key<?> key : characteristics.getKeys()) {
+                infoBuilder.append(String.format(Locale.US, "%s:  ",
+                        key.getName()));
+
+                Object val = characteristics.get(key);
+                if (val.getClass().isArray()) {
+                    // Iterate an array-type value
+                    // Assumes camera characteristics won't have arrays of arrays as values
+                    int len = Array.getLength(val);
+                    infoBuilder.append("[ ");
+                    for (int i = 0; i < len; i++) {
+                        infoBuilder.append(String.format(Locale.US, "%s%s",
+                                Array.get(val, i), (i + 1 == len) ? ""
+                                        : ", "));
+                    }
+                    infoBuilder.append(" ]\n\n");
+                } else {
+                    // Single value
+                    infoBuilder.append(String.format(Locale.US, "%s\n\n",
+                            val.toString()));
+                }
+            }
+            Log.d(ThisPlugin.TAG, infoBuilder.toString());
+
+
+
             StreamConfigurationMap map = characteristics
                 .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             if (map == null) {
                 throw new RuntimeException("Cannot get available preview/video sizes");
             }
     
+            int hardwareLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+            Log.d(ThisPlugin.TAG, "Hardware level: " + hardwareLevel);
+
             CameraConfig config = new CameraConfig();
             config.cameraId = cameraId;
-            // if(orientation == 0) {
-                config.mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-            // } else {
-            //     config.mSensorOrientation = orientation;
-            // }
+            config.mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             config.mVideoSize = chooseVideoSize(videoWidth, videoHeight, orientation, map.getOutputSizes(MediaRecorder.class));
             config.mPreviewSize = chooseOptimalPreviewSize(map.getOutputSizes(SurfaceTexture.class), surfaceWidth, surfaceHeight, config.mVideoSize);
-            config.mOrientation = activity.getResources().getConfiguration().orientation;
-            Log.d(ThisPlugin.TAG, "Camera config: sensorOrientation:"+config.mSensorOrientation + ", videoSize:"+config.mVideoSize + ", previewSize:"+config.mPreviewSize + ", orientation:"+config.mOrientation);
+            config.mDeviceOrientation = activity.getResources().getConfiguration().orientation;
+            Log.d(ThisPlugin.TAG, "Camera config: sensorOrientation:"+config.mSensorOrientation + ", videoSize:"+config.mVideoSize + ", previewSize:"+config.mPreviewSize + ", orientation:"+config.mDeviceOrientation);
 
             Camera camera = new Camera();
             camera.Open(activity, config, startPreview, onError);
@@ -335,21 +372,5 @@ public class Camera extends CameraDevice.StateCallback {
 
 }
 
-abstract class CaptureSessionConfigured
-{
-    public abstract void onConfigured(CameraCaptureSession session);
-    //  {
-    //     mPreviewSession = session;
-    //     updatePreview();
-    // }
 
-}
-
-class CameraConfig {
-    public Integer mSensorOrientation;
-    public Size mPreviewSize;
-    public Size mVideoSize;
-    public Integer mOrientation;
-    public String cameraId;
-}
 

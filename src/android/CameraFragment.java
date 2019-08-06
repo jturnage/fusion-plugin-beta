@@ -6,6 +6,7 @@ import com.fusionetics.plugins.bodymap.BodymapEventHandler;
 import com.fusionetics.plugins.bodymap.Camera;
 import com.fusionetics.plugins.bodymap.Objects.Video;
 import com.fusionetics.plugins.bodymap.ApiSettings;
+import com.fusionetics.plugins.bodymap.Objects.CaptureSessionConfigured;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,6 +25,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CameraDevice;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
 import android.os.Bundle;
@@ -72,6 +74,8 @@ public class CameraFragment extends Fragment
     private boolean mIsRecordingVideo = false;
     private Camera camera = null;
     private Video video = null;
+    private int surfaceWidth = 0;
+    private int surfaceHeight = 0;
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
@@ -100,8 +104,10 @@ public class CameraFragment extends Fragment
 
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
-                                              int surfaceWidth, int surfaceHeight) {
+                                              int _surfaceWidth, int _surfaceHeight) {
             Log.d(ThisPlugin.TAG, "SurfaceTextureListener.onSurfaceTextureAvailable width:"+surfaceWidth+", height:"+surfaceHeight);
+            surfaceWidth = _surfaceWidth;
+            surfaceHeight = _surfaceHeight;
             openCamera(surfaceWidth, surfaceHeight);
         }
 
@@ -215,7 +221,7 @@ public class CameraFragment extends Fragment
                 }
             });
 
-            if (camera.config.mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (camera.config.mDeviceOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 mTextureView.setAspectRatio(camera.config.mPreviewSize.getWidth(), camera.config.mPreviewSize.getHeight());
             } else {
                 mTextureView.setAspectRatio(camera.config.mPreviewSize.getHeight(), camera.config.mPreviewSize.getWidth());
@@ -265,7 +271,7 @@ public class CameraFragment extends Fragment
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(camera.config.mPreviewSize.getWidth(), camera.config.mPreviewSize.getHeight());
-            mPreviewBuilder = camera.createCaptureRequest();
+            mPreviewBuilder = camera.createCaptureRequestForPreview();
 
             Surface previewSurface = new Surface(texture);
             mPreviewBuilder.addTarget(previewSurface);
@@ -276,6 +282,11 @@ public class CameraFragment extends Fragment
                 public void onConfigured(CameraCaptureSession session) {
                     mPreviewSession = session;
                     updatePreview();
+                }
+                @Override
+                public void onFailed(CameraCaptureSession session) {
+                    mPreviewSession = session;
+                    stopEverything();
                 }
             });
         } catch (CameraAccessException e) {
@@ -360,9 +371,8 @@ public class CameraFragment extends Fragment
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(camera.config.mPreviewSize.getWidth(), camera.config.mPreviewSize.getHeight());
-            mPreviewBuilder = camera.createCaptureRequest();
+            mPreviewBuilder = camera.createCaptureRequestForRecording();
             Log.d(ThisPlugin.TAG, "startRecordingVideo - created capture request");
-//            mPreviewBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
             List<Surface> surfaces = new ArrayList<Surface>();
 
             // Set up Surface for the camera preview
@@ -374,7 +384,7 @@ public class CameraFragment extends Fragment
             Surface recorderSurface = mMediaRecorder.getSurface();
             surfaces.add(recorderSurface);
             mPreviewBuilder.addTarget(recorderSurface);
-            Log.d(ThisPlugin.TAG, "startRecordingVideo - set up preview serface");
+            Log.d(ThisPlugin.TAG, "startRecordingVideo - set up preview surface");
 
             // Start a capture session
             // Once the session starts, we can update the UI and start recording
@@ -388,17 +398,35 @@ public class CameraFragment extends Fragment
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // UI
-                            Log.d(ThisPlugin.TAG, "camera.createCaptureSession, calling mMediaRecorder.start()");
-
-                            int imageId = ThisPlugin.getAppResource(activity, "btn_stop_record", "drawable");
-
-                            mButtonVideo.setImageResource(imageId);
-                            // mButtonVideo.setText("STOP"); //R.string.stop
-                            mIsRecordingVideo = true;
-
                             // Start recording
-                            mMediaRecorder.start();
+                            try {
+                                Log.d(ThisPlugin.TAG, "camera.createCaptureSession, calling mMediaRecorder.start()");
+                                mMediaRecorder.start();
+
+                                int imageId = ThisPlugin.getAppResource(activity, "btn_stop_record", "drawable");
+                                mButtonVideo.setImageResource(imageId);
+
+                                mIsRecordingVideo = true;
+                            } catch(Exception e) {
+                                Log.e(ThisPlugin.TAG, "startRecordingVideo createCaptureSession failed");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailed(CameraCaptureSession session) {
+                    mPreviewSession = session;
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                resetVideo();
+                                eventHandler.RetakeVideoRequested(null);
+                            } catch(Exception e) {
+                                Log.e(ThisPlugin.TAG, "createCaptureSession, in onFailed - resetVideo failed", e);
+                            }
                         }
                     });
 
@@ -416,26 +444,31 @@ public class CameraFragment extends Fragment
 
     }
 
-    private void stopRecordingVideo() {
-        Log.d(ThisPlugin.TAG, "stopRecordingVideo");
-
+    private void resetVideo() {
         // UI
-        mIsRecordingVideo = false;
-
         int imageId = ThisPlugin.getAppResource(activity, "btn_start_record", "drawable");
         mButtonVideo.setImageResource(imageId);
 
         // Stop recording
         if(mMediaRecorder != null) {
-            mMediaRecorder.stop();
+            if(mIsRecordingVideo)
+                mMediaRecorder.stop();
             mMediaRecorder.reset();
         }
+        mIsRecordingVideo = false;
 
         if (null != activity) {
             Log.d(ThisPlugin.TAG, "Video saved: " + video.fullFilename);
         }
 
         stopEverything();
+    }
+
+    private void stopRecordingVideo() {
+        Log.d(ThisPlugin.TAG, "stopRecordingVideo");
+
+        resetVideo();
+
         eventHandler.OnVideoRecorded(video);
     }
 
@@ -493,6 +526,10 @@ public class CameraFragment extends Fragment
         video.deviceRotation = rotation;
         Log.d(ThisPlugin.TAG, "setUpMediaRecorder - window rotation:"+rotation);
         Log.d(ThisPlugin.TAG, "setUpMediaRecorder - sensor orientation:"+camera.config.mSensorOrientation);
+
+        // This block for images, not yet for video (with MediaRecorder), from https://medium.com/@kenodoggy/solving-image-rotation-on-android-using-camera2-api-7b3ed3518ab6
+        // int surfaceRotation = ORIENTATIONS.get(camera.config.mDeviceOrientation);
+        // int videoOrientation = (surfaceRotation + camera.config.mSensorOrientation + 270) % 360;
 
         switch (camera.config.mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
