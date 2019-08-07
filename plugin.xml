@@ -61,83 +61,89 @@
       <string>$MICROPHONE_USAGE_DESCRIPTION</string>
     </config-file>
   </platform>
-    <platform name="android">
-        <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="FusionAssessment">
-                <param name="android-package" value="com.fusionetics.plugins.bodymap.FusionAssessment" />
-            </feature>
-        </config-file>
-        <config-file parent="/*" target="AndroidManifest.xml">
-            <uses-permission android:name="android.permission.CAMERA" />
-            <uses-permission android:name="android.permission.RECORD_AUDIO" />
-            <uses-permission android:name="android.permission.INTERNET" />
-            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-feature android:name="android.hardware.camera" android:required="true" />
-        </config-file>
-        <source-file src="src/android/FusionAssessment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/Camera.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/PermissionHelper.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/FragmentConfirmationDialog.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/CameraFragment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/AutoFitTextureView.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/ThisPlugin.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/BodymapEventHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/UploadEventHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/PreviewFragment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/FusioneticsExercise.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/ApiSettings.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/VideoSubmitter.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/FusionResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
-        <source-file src="src/android/ProgressBarHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+  <platform name="android">
+      <config-file parent="/*" target="res/xml/config.xml">
+          <feature name="FusionAssessment">
+              <param name="android-package" value="com.fusionetics.plugins.bodymap.FusionAssessment" />
+          </feature>
+      </config-file>
+      <config-file parent="/*" target="AndroidManifest.xml">
+          <uses-permission android:name="android.permission.CAMERA" />
+          <uses-permission android:name="android.permission.RECORD_AUDIO" />
+          <uses-permission android:name="android.permission.INTERNET" />
+          <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+          <uses-feature android:name="android.hardware.camera" android:required="true" />
+      </config-file>
+      <source-file src="src/android/FusionAssessment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/Camera.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/PermissionHelper.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/FragmentConfirmationDialog.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/CameraFragment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/AutoFitTextureView.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/ThisPlugin.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/BodymapEventHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/UploadEventHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/PreviewFragment.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/FusioneticsExercise.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/ApiSettings.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/VideoSubmitter.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/FusionResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
+      <source-file src="src/android/ProgressBarHandler.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment" />
 
-        <source-file src="src/android/Objects/Video.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
-        <source-file src="src/android/Objects/UploadResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
-        <source-file src="src/android/Objects/EMASet.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
+      <source-file src="src/android/Objects/Video.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
+      <source-file src="src/android/Objects/UploadResult.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
+      <source-file src="src/android/Objects/EMASet.java" target-dir="src/cordova-plugin-fusion-bodymap/FusionAssessment/Objects" />
 
-        <source-file src="src/android/res/drawable-hdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-hdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-mdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-mdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-mdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-mdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/btn_start_record.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/btn_stop_record.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
 
-        <source-file src="src/android/res/drawable-ldpi/play.png" target-dir="app/src/main/res/drawable-ldpi"/>
-        <source-file src="src/android/res/drawable-mdpi/play.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-hdpi/play.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/play.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/play.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
-        <source-file src="src/android/res/drawable-xxxhdpi/play.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
+      <source-file src="src/android/res/drawable-ldpi/play.png" target-dir="app/src/main/res/drawable-ldpi"/>
+      <source-file src="src/android/res/drawable-mdpi/play.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/play.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/play.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/play.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-xxxhdpi/play.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
 
-        <source-file src="src/android/res/drawable-ldpi/save.png" target-dir="app/src/main/res/drawable-ldpi"/>
-        <source-file src="src/android/res/drawable-mdpi/save.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-hdpi/save.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/save.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/save.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
-        <source-file src="src/android/res/drawable-xxxhdpi/save.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
+      <source-file src="src/android/res/drawable-ldpi/save.png" target-dir="app/src/main/res/drawable-ldpi"/>
+      <source-file src="src/android/res/drawable-mdpi/save.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/save.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/save.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/save.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-xxxhdpi/save.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
 
-        <source-file src="src/android/res/drawable-ldpi/retake.png" target-dir="app/src/main/res/drawable-ldpi"/>
-        <source-file src="src/android/res/drawable-mdpi/retake.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-hdpi/retake.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/retake.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/retake.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
-        <source-file src="src/android/res/drawable-xxxhdpi/retake.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
+      <source-file src="src/android/res/drawable-ldpi/retake.png" target-dir="app/src/main/res/drawable-ldpi"/>
+      <source-file src="src/android/res/drawable-mdpi/retake.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/retake.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/retake.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/retake.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-xxxhdpi/retake.png" target-dir="app/src/main/res/drawable-xxxhdpi"/>
 
-        <source-file src="src/android/res/drawable-ldpi/back.png" target-dir="app/src/main/res/drawable-ldpi"/>
-        <source-file src="src/android/res/drawable-mdpi/back.png" target-dir="app/src/main/res/drawable-mdpi"/>
-        <source-file src="src/android/res/drawable-hdpi/back.png" target-dir="app/src/main/res/drawable-hdpi"/>
-        <source-file src="src/android/res/drawable-xhdpi/back.png" target-dir="app/src/main/res/drawable-xhdpi"/>
-        <source-file src="src/android/res/drawable-xxhdpi/back.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
+      <source-file src="src/android/res/drawable-ldpi/back.png" target-dir="app/src/main/res/drawable-ldpi"/>
+      <source-file src="src/android/res/drawable-mdpi/back.png" target-dir="app/src/main/res/drawable-mdpi"/>
+      <source-file src="src/android/res/drawable-hdpi/back.png" target-dir="app/src/main/res/drawable-hdpi"/>
+      <source-file src="src/android/res/drawable-xhdpi/back.png" target-dir="app/src/main/res/drawable-xhdpi"/>
+      <source-file src="src/android/res/drawable-xxhdpi/back.png" target-dir="app/src/main/res/drawable-xxhdpi"/>
 
-        <source-file src="src/android/res/layout/camera_fragment.xml" target-dir="app/src/main/res/layout" />
-        <source-file src="src/android/res/layout/media_player.xml" target-dir="app/src/main/res/layout" />
+      <source-file src="src/android/res/layout/camera_fragment.xml" target-dir="app/src/main/res/layout" />
+      <source-file src="src/android/res/layout/media_player.xml" target-dir="app/src/main/res/layout" />
 
-        <source-file src="src/android/res/values/dimens.xml" target-dir="app/src/main/res/values"/>
-        <source-file src="src/android/res/values/colors.xml" target-dir="app/src/main/res/values"/>
+      <source-file src="src/android/res/values/dimens.xml" target-dir="app/src/main/res/values"/>
+      <source-file src="src/android/res/values/colors.xml" target-dir="app/src/main/res/values"/>
 
-        <source-file src="src/android/res/drawable/guides.xml" target-dir="app/src/main/res/drawable"/>
+      <source-file src="src/android/res/drawable/guides.xml" target-dir="app/src/main/res/drawable"/>
 
-    </platform>  
+  </platform>  
+  <platform name="windows">
+    <js-module src="src/windows/CameraProxy.js" name="CameraProxy">
+      <merges target=""/>
+    </js-module>
+  </platform>
+
 </plugin>
